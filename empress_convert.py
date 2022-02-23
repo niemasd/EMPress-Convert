@@ -102,31 +102,35 @@ if __name__ == "__main__":
         f = gopen(args.input, 'r'); nwk = f.read().decode().strip(); f.close()
     else:
         f = open(args.input, 'r', buffering=DEFAULT_BUFSIZE); nwk = f.read().strip(); f.close()
-    tree = read_tree_newick(nwk)
+
+    tree = parse_newick(nwk)
 
     # create output files
     out_lengths = gopen(args.output_lengths, 'w', 9)
     out_labels = gopen(args.output_labels, 'w', 9)
     out_tree = gopen(args.output_tree, 'w', 9)
 
-    # traverse tree and write output files
-    for node in tree.traverse_postorder():
+    for i in range(1, len(tree) + 1):
+        node = tree.postorderselect(i)
+        name = tree.name(node)
+        length = tree.length(node)
+
         # write current length
-        if node.edge_length is None:
-            node.edge_length = 0
-        tmp_num = pack('>d', node.edge_length)
+        if length is None:
+            length = 0
+        tmp_num = pack('>d', length)
         out_lengths.write(tmp_num)
 
         # write current label
-        if node.label is None:
-            tmp_label = "\n"
+        if name is None:
+            tmp_label = ""
         else:
-            tmp_label = "%s\n" % node.label.strip()
+            tmp_label = name
+
         out_labels.write(tmp_label.encode())
-    del tree # delete TreeSwift Tree object to save memory?
 
     # convert tree structure
-    for num in shifting(parse_newick(nwk).B):
+    for num in shifting(tree.B):
         tmp_num = pack('>Q', num)
         out_tree.write(tmp_num)
 
