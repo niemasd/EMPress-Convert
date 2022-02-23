@@ -122,9 +122,9 @@ if __name__ == "__main__":
 
         # write current label
         if name is None:
-            tmp_label = ""
+            tmp_label = "\n"
         else:
-            tmp_label = name
+            tmp_label = "%s\n" %  name
 
         out_labels.write(tmp_label.encode())
 
