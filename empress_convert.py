@@ -5,7 +5,6 @@ from itertools import zip_longest
 from os.path import isfile
 from struct import pack
 from sys import stdin
-from treeswift import read_tree_newick
 import argparse
 DEFAULT_BUFSIZE = 1048576
 
